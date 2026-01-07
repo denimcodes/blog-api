@@ -4,7 +4,7 @@
  */
 
 import { Router } from 'express';
-import { body } from 'express-validator';
+import { body, cookie } from 'express-validator';
 import bcrypt from 'bcrypt';
 
 import register from '@/controllers/v1/register';
@@ -12,6 +12,7 @@ import register from '@/controllers/v1/register';
 import validationError from '@/middlewares/validation_error';
 import User from '@/models/user';
 import login from '@/controllers/v1/login';
+import refreshToken from '@/controllers/v1/token';
 
 const router = Router();
 
@@ -70,7 +71,10 @@ router.post(
     .withMessage('Password must be at least 8 characters long')
     .custom(async (value, { req }) => {
       const { email } = req.body as { email: string };
-      const user = await User.findOne({ email }).select('password').lean().exec();
+      const user = await User.findOne({ email })
+        .select('password')
+        .lean()
+        .exec();
 
       if (!user) {
         throw new Error('User email or password is invalid');
@@ -83,6 +87,16 @@ router.post(
     }),
   validationError,
   login,
+);
+router.post(
+  '/refresh-token',
+  cookie('refreshToken')
+    .notEmpty()
+    .withMessage('Refresh token expired')
+    .isJWT()
+    .withMessage('Invalid refresh token'),
+  validationError,
+  refreshToken,
 );
 
 export default router;
