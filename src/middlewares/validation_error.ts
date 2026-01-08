@@ -1,3 +1,8 @@
+/**
+ * @copyright 2026 Denimsun Basumatary
+ * @license Apache-2.0
+ */
+
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
 

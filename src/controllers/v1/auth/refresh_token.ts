@@ -1,3 +1,8 @@
+/**
+ * @copyright 2026 Denimsun Basumatary
+ * @license Apache-2.0
+ */
+
 import { Request, Response } from 'express';
 import Token from '@/models/token';
 import { generateAccessToken, verifyRefreshToken } from '@/lib/jwt';

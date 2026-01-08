@@ -1,3 +1,8 @@
+/**
+ * @copyright 2026 Denimsun Basumatary
+ * @license Apache-2.0
+ */
+
 import { model, Schema } from "mongoose";
 import bcrypt from 'bcrypt'
 

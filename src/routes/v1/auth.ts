@@ -7,14 +7,14 @@ import { Router } from 'express';
 import { body, cookie } from 'express-validator';
 import bcrypt from 'bcrypt';
 
-import register from '@/controllers/v1/register';
+import register from '@/controllers/v1/auth/register';
 
 import validationError from '@/middlewares/validation_error';
 import User from '@/models/user';
-import login from '@/controllers/v1/login';
-import refreshToken from '@/controllers/v1/token';
+import login from '@/controllers/v1/auth/login';
+import refreshToken from '@/controllers/v1/auth/refresh_token';
 import authenticate from '@/middlewares/authenticate';
-import logout from '@/controllers/v1/logout';
+import logout from '@/controllers/v1/auth/logout';
 
 const router = Router();
 
