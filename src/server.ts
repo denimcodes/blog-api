@@ -27,7 +27,7 @@ import { logger } from '@/lib/winston';
 const handleServerShutdown = async () => {
   try {
     await disconnectFromDb();
-    logger.info('Server SHUTDOWN');
+    logger.warn('Server SHUTDOWN');
     process.exit(0);
   } catch (err) {
     logger.error('Error during server shutdown', err);
