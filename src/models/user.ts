@@ -17,6 +17,7 @@ export interface IUser {
     website?: string;
     facebook?: string;
     instagram?: string;
+    linkedin?: string;
     x?: string;
     youtube?: string;
   }
