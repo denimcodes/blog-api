@@ -1,3 +1,8 @@
+/**
+ * @copyright 2026 Denimsun Basumatary
+ * @license Apache-2.0
+ */
+
 import config from '@/config';
 import jwt from 'jsonwebtoken';
 import { Types } from 'mongoose';

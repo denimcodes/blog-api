@@ -1,3 +1,8 @@
+/**
+ * @copyright 2026 Denimsun Basumatary
+ * @license Apache-2.0
+ */
+
 import { Request, Response } from 'express';
 import { logger } from '@/lib/winston';
 import User from '@/models/user';
