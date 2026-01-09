@@ -21,12 +21,14 @@ const getAllBlogs = async (req: Request, res: Response) => {
             return;
         }
 
-        // if user role is user, then only get blogs that are published
-        type BlogStatus = 'draft' | 'published';
+        let blogQuery: Record<string, any> = {};
+        if (user.role === 'user') {
+            blogQuery.status = 'published';
+        }
 
-        const status: BlogStatus = user.role === 'user' ? 'draft' : 'published';
-        const blogs = await Blog.find({ status })
-            .select('-__v')
+        const blogs = await Blog.find(blogQuery)
+            .select('-__v -banner.publicId')
+            .populate('author', '-createdAt -updatedAt -__v')
             .limit(limit)
             .skip(offset)
             .lean()

@@ -18,7 +18,7 @@ const uploadBannerImage = (method: 'put' | 'post') => {
     if (!req.file) {
       return res.status(400).json({
         code: 'ValidationError',
-        message: 'Banner url is required',
+        message: 'Banner image is required',
       });
     }
 
