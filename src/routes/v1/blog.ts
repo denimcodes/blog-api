@@ -5,9 +5,10 @@ import createBlog from '@/controllers/v1/blog/create_blog';
 import authenticate from '@/middlewares/authenticate';
 import authorize from '@/middlewares/authorize';
 import uploadBannerImage from '@/middlewares/upload_banner_image';
-import { body, query } from 'express-validator';
+import { body, param, query } from 'express-validator';
 import validationError from '@/middlewares/validation_error';
 import getAllBlogs from '@/controllers/v1/blog/get_all_blogs';
+import getBlog from '@/controllers/v1/blog/get_blog';
 
 const router = Router();
 
@@ -52,6 +53,15 @@ router.get(
     .withMessage('Query must be a positive integer'),
   validationError,
   getAllBlogs,
+);
+
+router.get(
+  '/:blogId',
+  authenticate,
+  authorize(['admin']),
+  param('blogId').notEmpty().withMessage('Blog id is required').isMongoId().withMessage('Invalid blog id'),
+  validationError,
+  getBlog,
 );
 
 export default router;
