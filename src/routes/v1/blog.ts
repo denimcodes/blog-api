@@ -9,6 +9,7 @@ import { body, param, query } from 'express-validator';
 import validationError from '@/middlewares/validation_error';
 import getAllBlogs from '@/controllers/v1/blog/get_all_blogs';
 import getBlog from '@/controllers/v1/blog/get_blog';
+import deleteBlog from '@/controllers/v1/blog/delete_blog';
 
 const router = Router();
 
@@ -64,4 +65,12 @@ router.get(
   getBlog,
 );
 
+router.delete(
+  '/:blogId',
+  authenticate,
+  authorize(['admin']),
+  param('blogId').notEmpty().withMessage('Blog id is required').isMongoId().withMessage('Invalid blog id'),
+  validationError,
+  deleteBlog,
+);
 export default router;

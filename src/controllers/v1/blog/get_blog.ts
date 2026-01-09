@@ -7,6 +7,12 @@ const getBlog = async (req: Request, res: Response) => {
 
   try {
     const blog = await Blog.findById(blogId).select('-__v').lean().exec();
+    if (!blog) {
+      return res.status(404).json({
+        code: 'BlogNotFound',
+        message: 'Blog not found',
+      });
+    }
     res.json({ blog });
   } catch (err) {
     res.status(500).json({
