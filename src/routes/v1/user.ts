@@ -4,14 +4,17 @@
  */
 
 import { Router } from 'express';
-import { body } from 'express-validator';
+import { body, param, query } from 'express-validator';
 
 import authenticate from '@/middlewares/authenticate';
 import authorize from '@/middlewares/authorize';
 import getCurrentUser from '@/controllers/v1/user/get_current_user';
-import updateUser from '@/controllers/v1/user/update_user';
+import updateCurrentUser from '@/controllers/v1/user/update_current_user';
 import User from '@/models/user';
 import validationError from '@/middlewares/validation_error';
+import deleteCurrentUser from '@/controllers/v1/user/delete_current_user';
+import getAllUsers from '@/controllers/v1/user/get_all_users';
+import getUser from '@/controllers/v1/user/get_user';
 import deleteUser from '@/controllers/v1/user/delete_user';
 
 const router = Router();
@@ -73,8 +76,45 @@ router.put(
     .isLength({ max: 1000 })
     .withMessage('Url must be less than 1000 characters'),
   validationError,
-  updateUser,
+  updateCurrentUser,
 );
-router.delete('/current', authenticate, deleteUser);
+router.delete(
+  '/current',
+  authenticate,
+  authorize(['admin', 'user']),
+  deleteCurrentUser,
+);
+
+router.get(
+  '/',
+  authenticate,
+  authorize(['admin']),
+  query('limit')
+    .optional()
+    .isInt({ min: 1, max: 50 })
+    .withMessage('Limit must be between 1 to 50'),
+  query('offset')
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage('Query must be a positive integer'),
+  validationError,
+  getAllUsers,
+);
+
+router.get(
+  '/:userId',
+  authenticate,
+  authorize(['admin']),
+  param('userId').notEmpty().isMongoId().withMessage('Invalid user id'),
+  getUser
+)
+
+router.delete(
+  '/:userId',
+  authenticate,
+  authorize(['admin']),
+  param('userId').notEmpty().isMongoId().withMessage('Invalid user id'),
+  deleteUser
+)
 
 export default router;

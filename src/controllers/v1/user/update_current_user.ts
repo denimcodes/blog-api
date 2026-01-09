@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import User from '@/models/user';
 import { logger } from '@/lib/winston';
 
-const updateUser = async (req: Request, res: Response) => {
+const updateCurrentUser = async (req: Request, res: Response) => {
   const userId = req.userId;
   const {
     username,
@@ -66,4 +66,4 @@ const updateUser = async (req: Request, res: Response) => {
   }
 };
 
-export default updateUser;
+export default updateCurrentUser;
