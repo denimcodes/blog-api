@@ -5,8 +5,9 @@ import createBlog from '@/controllers/v1/blog/create_blog';
 import authenticate from '@/middlewares/authenticate';
 import authorize from '@/middlewares/authorize';
 import uploadBannerImage from '@/middlewares/upload_banner_image';
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
 import validationError from '@/middlewares/validation_error';
+import getAllBlogs from '@/controllers/v1/blog/get_all_blogs';
 
 const router = Router();
 
@@ -35,6 +36,22 @@ router.post(
     .withMessage('Status must be one of the value, status or published'),
   validationError,
   createBlog,
+);
+
+router.get(
+  '/',
+  authenticate,
+  authorize(['admin']),
+  query('limit')
+    .optional()
+    .isInt({ min: 1, max: 50 })
+    .withMessage('Limit must be between 1 to 50'),
+  query('offset')
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage('Query must be a positive integer'),
+  validationError,
+  getAllBlogs,
 );
 
 export default router;
