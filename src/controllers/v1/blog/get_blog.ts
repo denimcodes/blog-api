@@ -6,7 +6,11 @@ const getBlog = async (req: Request, res: Response) => {
   const blogId = req.params.blogId;
 
   try {
-    const blog = await Blog.findById(blogId).select('-__v').lean().exec();
+    const blog = await Blog.findById(blogId)
+      .select('-__v -banner.publicId')
+      .populate('author', '-createdAt -updatedAt -__v')
+      .lean()
+      .exec();
     if (!blog) {
       return res.status(404).json({
         code: 'BlogNotFound',
