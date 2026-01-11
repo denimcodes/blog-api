@@ -16,6 +16,7 @@ import deleteCurrentUser from '@/controllers/v1/user/delete_current_user';
 import getAllUsers from '@/controllers/v1/user/get_all_users';
 import getUser from '@/controllers/v1/user/get_user';
 import deleteUser from '@/controllers/v1/user/delete_user';
+import getBlogsByUser from '@/controllers/v1/blog/get_blogs_by_user';
 
 const router = Router();
 
@@ -101,13 +102,6 @@ router.get(
   getAllUsers,
 );
 
-router.get(
-  '/:userId',
-  authenticate,
-  authorize(['admin']),
-  param('userId').notEmpty().isMongoId().withMessage('Invalid user id'),
-  getUser
-)
 
 router.delete(
   '/:userId',

@@ -10,6 +10,7 @@ import validationError from '@/middlewares/validation_error';
 import getAllBlogs from '@/controllers/v1/blog/get_all_blogs';
 import getBlog from '@/controllers/v1/blog/get_blog';
 import deleteBlog from '@/controllers/v1/blog/delete_blog';
+import getBlogsByUser from '@/controllers/v1/blog/get_blogs_by_user';
 
 const router = Router();
 
@@ -28,10 +29,7 @@ router.post(
     .withMessage('Title is required')
     .isLength({ max: 180 })
     .withMessage('Title must be less than 180 characters'),
-  body('content')
-    .trim()
-    .notEmpty()
-    .withMessage('Content is required'),
+  body('content').trim().notEmpty().withMessage('Content is required'),
   body('status')
     .optional()
     .isIn(['draft', 'published'])
@@ -43,7 +41,7 @@ router.post(
 router.get(
   '/',
   authenticate,
-  authorize(['admin']),
+  authorize(['admin', 'user']),
   query('limit')
     .optional()
     .isInt({ min: 1, max: 50 })
@@ -60,7 +58,11 @@ router.get(
   '/:blogId',
   authenticate,
   authorize(['admin']),
-  param('blogId').notEmpty().withMessage('Blog id is required').isMongoId().withMessage('Invalid blog id'),
+  param('blogId')
+    .notEmpty()
+    .withMessage('Blog id is required')
+    .isMongoId()
+    .withMessage('Invalid blog id'),
   validationError,
   getBlog,
 );
@@ -69,8 +71,34 @@ router.delete(
   '/:blogId',
   authenticate,
   authorize(['admin']),
-  param('blogId').notEmpty().withMessage('Blog id is required').isMongoId().withMessage('Invalid blog id'),
+  param('blogId')
+    .notEmpty()
+    .withMessage('Blog id is required')
+    .isMongoId()
+    .withMessage('Invalid blog id'),
   validationError,
   deleteBlog,
 );
+
+router.get(
+  '/user/:userId',
+  authenticate,
+  authorize(['admin']),
+  query('limit')
+    .optional()
+    .isInt({ min: 1, max: 50 })
+    .withMessage('Limit must be between 1 to 50'),
+  query('offset')
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage('Query must be a positive integer'),
+  param('userId')
+    .notEmpty()
+    .withMessage('User id is required')
+    .isMongoId()
+    .withMessage('Invalid user id'),
+  validationError,
+  getBlogsByUser,
+);
+
 export default router;
