@@ -6,7 +6,7 @@
 import app from '@/app';
 import config from '@/config';
 import { connectToDb, disconnectFromDb } from '@/lib/mongoose';
-import { logger } from '@/lib/winston';
+import { logger, logtail } from '@/lib/winston';
 
 (async () => {
   try {
@@ -29,6 +29,8 @@ const handleServerShutdown = async () => {
     await disconnectFromDb();
     logger.warn('Server SHUTDOWN');
     process.exit(0);
+    
+    await logtail.flush();
   } catch (err) {
     logger.error('Error during server shutdown', err);
   }

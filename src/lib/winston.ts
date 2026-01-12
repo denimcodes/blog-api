@@ -6,10 +6,23 @@
  import winston from 'winston'
  
  import config from '@/config'
+import { Logtail } from '@logtail/node';
+import { LogtailTransport } from '@logtail/winston';
  
 const { combine, timestamp, json, errors, align, printf, colorize } = winston.format;
 
+const logtail = new Logtail(config.LOGTAIL_SOURCE_TOKEN, {
+  endpoint: config.LOGTAIL_INGESTING_HOST
+});
+
 const transports: winston.transport[] = [];
+
+if (config.NODE_ENV === 'production') {
+  if (!config.LOGTAIL_INGESTING_HOST || !config.LOGTAIL_SOURCE_TOKEN) {
+    throw new Error('Logtail ingesting host and source token are required in production');
+  }
+  transports.push(new LogtailTransport(logtail));
+}
 
 if (config.NODE_ENV !== 'production') {
   transports.push(
@@ -35,4 +48,4 @@ const logger = winston.createLogger({
   silent: config.NODE_ENV === 'test' // Disable logging in test
 })
 
-export {logger}
+export {logger, logtail}
